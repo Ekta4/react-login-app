@@ -3,10 +3,24 @@ import Box from 'grommet/components/Box';
 import Label from 'grommet/components/Label';
 import Button from 'grommet/components/Button';
 import Toast from 'grommet/components/Toast';
-import { Field, reduxForm } from 'redux-form'
-import { loginUser } from './actions';
+import { Field, reduxForm, getFormSyncErrors } from 'redux-form'
 import { connect } from 'react-redux';
 
+import './styles.css';
+
+const required = value => (value ? undefined : 'Required')
+
+const renderField = ({ input, label, type, meta: { touched, error, warning } }) => (
+  <div>
+    <label>{label}</label>
+    <div>
+      <input {...input} placeholder={label} type={type} />
+      {touched &&
+        ((error && <span>{error}</span>) ||
+          (warning && <span>{warning}</span>))}
+    </div>
+  </div>
+);
 class LoginForm extends React.Component {
   state = { error: '' };
   componentDidMount() {
@@ -26,79 +40,41 @@ class LoginForm extends React.Component {
       });
   }
   onErrorClose = () => {
-    this.setState({error: ''});
+    this.setState({ error: '' });
   }
   render() {
     return (
-      <Box>
+      <Box justify="center" align="center">
         {this.state.error &&
           <Toast status="critical" onClose={this.onErrorClose} size="small">
             {this.state.error}
           </Toast>
         }
         <form onSubmit={this.props.handleSubmit(this.submit)}>
-          <Box margin="small" direction="row">
-            <Label>Email</Label>
-            <Field name="email" component="input" type="text" />
+          <Box justify="center" align="center" margin="small" direction="row">
+            <Label className="label-signup">Email</Label>
+            <Field validate={required} name="email" component={renderField} type="text" />
           </Box>
-          <Box margin="small" direction="row">
-            <Label>Password</Label>
-            <Field name="password" component="input" type="password" />
+          <Box justify="center" align="center" margin="small" direction="row">
+            <Label className="label-signup">Password</Label>
+            <Field validate={required} name="password" component={renderField} type="password" />
           </Box>
-          <Button primary label="Submit" type="submit" />
+          <Box justify="center" align="center" direction="row">
+            <Button primary label="Login" type="submit" />
+            <Button label='SignUp' href='/signup' primary />
+          </Box>
         </form>
       </Box>
     );
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  loginUser: () => dispatch(loginUser()),
-});
-
-LoginForm = connect(
-  null,
-  mapDispatchToProps
-)(LoginForm);
-
-export default reduxForm({
+LoginForm = reduxForm({
   form: 'login'
 })(LoginForm);
 
-
-// import React, { Component } from 'react';
-// import { Field, reduxForm } from 'redux-form'
-
-// class ContactForm extends Component {
-//   handleSubmit = (e) => {
-//     console.log("in submit", e);
-//     // e.preventDefault();
-//   }
-//   render() {
-//     // const { handleSubmit } = this.props;
-//     return (
-//       <form onSubmit={this.handleSubmit}>
-//         <div>
-//           <label>First Name</label>
-//           <Field name="firstName" component="input" type="text" />
-//         </div>
-//         <div>
-//           <label>Last Name</label>
-//           <Field name="lastName" component="input" type="text" />
-//         </div>
-//         <div>
-//           <label>Email</label>
-//           <Field name="email" component="input" type="email" />
-//         </div>
-//         <button type="submit">Submit</button>
-//       </form>
-//     );
-//   }
-// }
-
-// // Decorate the form component
-// ContactForm = reduxForm({
-//   form: 'contact' // a unique name for this form
-// })(ContactForm);
-
-// export default ContactForm;
+export default connect(
+  state => ({
+    submitErrors: getFormSyncErrors('login')(state)
+  })
+)(LoginForm)

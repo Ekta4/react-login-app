@@ -3,7 +3,24 @@ import Box from 'grommet/components/Box';
 import Label from 'grommet/components/Label';
 import Button from 'grommet/components/Button';
 import Toast from 'grommet/components/Toast';
-import { Field, reduxForm } from 'redux-form'
+import { Field, reduxForm, getFormSyncErrors  } from 'redux-form'
+import { connect } from 'react-redux';
+
+import './styles.css';
+
+const required = value => (value ? undefined : 'Required')
+const maxLength = max => value =>
+  value && value.length > max ? `Must be ${max} characters or less` : undefined
+  const maxLength30 = maxLength(30)
+  const maxLength80 = maxLength(80)
+const email = value =>
+  value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
+    ? 'Invalid email address'
+    : undefined
+const phoneNumber = value =>
+  value && !/^(0|[1-9][0-9]{9})$/i.test(value)
+    ? 'Invalid phone number, must be 10 digits'
+    : undefined
 
 class FieldFileInput extends React.Component {
   getBase64 = (file) => {
@@ -26,8 +43,7 @@ class FieldFileInput extends React.Component {
   }
 
   render() {
-    const { input: { value } } = this.props
-    const { input, label, required, meta, } = this.props  //whatever props you send to the component from redux-form Field
+    const { label } = this.props  //whatever props you send to the component from redux-form Field
     return (
       <div><label>{label}</label>
         <div>
@@ -41,7 +57,17 @@ class FieldFileInput extends React.Component {
     )
   }
 }
-
+const renderField = ({ input, label, type, meta: { touched, error, warning } }) => (
+  <div>
+    <label>{label}</label>
+    <div>
+      <input {...input} placeholder={label} type={type} />
+      {touched &&
+        ((error && <span>{error}</span>) ||
+          (warning && <span>{warning}</span>))}
+    </div>
+  </div>
+)
 class SignUpForm extends React.Component {
   state = {
     error: ''
@@ -80,6 +106,7 @@ class SignUpForm extends React.Component {
     console.log(e);
   }
   render() {
+    console.log("props..:",this.props.submitErrors);
     return (
       <Box>
         {this.state.error &&
@@ -88,54 +115,60 @@ class SignUpForm extends React.Component {
           </Toast>
         }
         <form onSubmit={this.props.handleSubmit(this.submit)}>
-          <Box margin="small" direction="row">
-            <Label>First Name</Label>
-            <Field name="first name" component="input" type="text" />
+          <Box justify="center" align="center" margin="small" direction="row">
+            <Label className="label-signup">First Name</Label>
+            <Field onBlur={this.props.onBlur} validate={[required, maxLength30]} name="first name" component={renderField} type="text" />
           </Box>
-          <Box margin="small" direction="row">
-            <Label>Last Name</Label>
-            <Field name="last name" component="input" type="text" />
+          <Box justify="center" align="center" margin="small" direction="row">
+            <Label className="label-signup">Last Name</Label>
+            <Field validate={[required, maxLength30]} name="last name" component={renderField} type="text" />
           </Box>
-          <Box margin="small" direction="row">
-            <Label>Surname</Label>
-            <Field name="surname" component="input" type="text" />
+          <Box justify="center" align="center" margin="small" direction="row">
+            <Label className="label-signup">Surname</Label>
+            <Field validate={[required, maxLength30]} name="surname" component={renderField} type="text" />
           </Box>
-          <Box margin="small" direction="row">
-            <Label>Mobile</Label>
-            <Field name="mobile" component="input" type="number" />
+          <Box justify="center" align="center" margin="small" direction="row">
+            <Label className="label-signup">Mobile</Label>
+            <Field validate={[required, phoneNumber]} name="mobile" component={renderField} type="number" />
           </Box>
-          <Box margin="small" direction="row">
-            <Label>Email</Label>
-            <Field name="email" component="input" type="text" />
+          <Box justify="center" align="center" margin="small" direction="row">
+            <Label className="label-signup">Email</Label>
+            <Field validate={[required, email]} name="email" component={renderField} type="text" />
           </Box>
-          <Box margin="small" direction="row">
-            <Label>Password</Label>
-            <Field name="password" component="input" type="password" />
+          <Box justify="center" align="center" margin="small" direction="row">
+            <Label className="label-signup">Password</Label>
+            <Field validate={[required]} name="password" component={renderField} type="password" />
           </Box>
-          <Box margin="small" direction="row">
-            <Label>Confirm Password</Label>
-            <Field name="confirm password" component="input" type="password" />
+          <Box justify="center" align="center" margin="small" direction="row">
+            <Label className="label-signup">Confirm Password</Label>
+            <Field validate={[required]} name="confirm password" component={renderField} type="password" />
           </Box>
-          <Box margin="small" direction="row">
-            <Label>Profile Picture</Label>
+          <Box justify="center" align="center" margin="small" direction="row">
+            <Label className="label-signup">Profile Picture</Label>
             <Field name="profile picture" component={FieldFileInput} type="file" />
           </Box>
-          <Box margin="small" direction="row">
-            <Label>Address</Label>
-            <Field name="address" component="input" type="text" />
+          <Box justify="center" align="center" margin="small" direction="row">
+            <Label className="label-signup">Address</Label>
+            <Field validate={[required, maxLength80]} name="address" component={renderField} type="text" />
           </Box>
-          <Box margin="small" direction="row">
-            <Label>Date of Birth</Label>
-            <Field name="dob" component="input" type="date" />
+          <Box justify="center" align="center" margin="small" direction="row">
+            <Label className="label-signup">Date of Birth</Label>
+            <Field validate={[required]} name="dob" component={renderField} type="date" />
           </Box>
-          <Button primary label="Submit" type="submit" />
+          <Button label="Sign Up" type="submit" />
+          <Button label='Login' href='/login' />
         </form>
       </Box>
     );
   }
 }
 
-export default reduxForm({
+SignUpForm = reduxForm({
   form: 'signup'
 })(SignUpForm);
 
+export default connect(
+  state => ({
+    submitErrors: getFormSyncErrors('signup')(state)
+  })
+)(SignUpForm)
