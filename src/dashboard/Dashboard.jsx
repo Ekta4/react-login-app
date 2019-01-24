@@ -7,7 +7,7 @@ import Menu from 'grommet/components/Menu';
 import Anchor from 'grommet/components/Anchor';
 import Footer from 'grommet/components/Footer';
 import Image from 'grommet/components/Image';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { IntlProvider, addLocaleData, FormattedMessage } from 'react-intl';
 import en from 'react-intl/locale-data/en';
 import zh from 'react-intl/locale-data/zh';
@@ -47,13 +47,18 @@ const AppLeftMenu = ({ userdata }) => (
     </Header>
     <Box justify='start'>
       <Menu primary={true}>
+        {/* <NavLink to="/dashboard" > */}
         <Anchor href='/dashboard' className='active'>
           Home
         </Anchor>
+        {/* </NavLink> */}
         {
-          userdata.isAdmin && <Anchor href='/dashboard/friends'>
+          userdata.isAdmin &&
+          // <NavLink to="/dashboard/friends" >
+          <Anchor href='/dashboard/friends'>
             Friends List
-        </Anchor>
+         </Anchor>
+          // </NavLink>
         }
       </Menu>
     </Box>
@@ -147,7 +152,7 @@ class Dashboard extends React.Component {
   }
   render() {
     const { userid, userdata, languageCode } = this.state;
-    const loginRedirect = (<Redirect to='login' />);
+    const loginRedirect = (<Redirect to='/login' />);
     const dashboard = (
       <Router>
         <IntlProvider
@@ -167,8 +172,8 @@ class Dashboard extends React.Component {
                   <Route path='/dashboard/friends' exact={true} >
                     <FriendsList />
                   </Route>
-                  <Route path='/dashboard' >
-                    <DashboardContent userdata={userdata} exact={true} />
+                  <Route path='/dashboard' exact={true}>
+                    <DashboardContent userdata={userdata} />
                   </Route>
                 </Switch>
               </Box>

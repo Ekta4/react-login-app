@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import store from './stores';
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import '../node_modules/grommet-css';
 import LoginForm from './login';
 import SignUpForm from './signUp';
@@ -22,10 +22,6 @@ const routes = [
   {
     path: "/dashboard",
     component: Dashboard
-  },
-  {
-    path: "/",
-    component: LoginForm
   }
 ];
 class App extends Component {
@@ -33,9 +29,12 @@ class App extends Component {
     return (
       <Router>
         <Provider store={store}>
+          <Switch>
             {routes.map((route) => (
-              <Route path={route.path} component={route.component} key={route.path} exact={true} />
+              <Route path={route.path} component={route.component} key={route.path} />
             ))}
+            <Redirect to="/login" />
+          </Switch>
         </Provider>
 </Router>
     );
