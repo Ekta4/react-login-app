@@ -30,3 +30,7 @@
     transform: rotate(360deg);
   }
 }
+.error-span {
+  color: red;
+  margin-left: 15px;
+}
