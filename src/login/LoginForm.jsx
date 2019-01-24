@@ -8,27 +8,13 @@ import { connect } from 'react-redux';
 import { Redirect } from "react-router-dom";
 import LoginIcon from 'grommet/components/icons/base/Login';
 import GroupIcon from 'grommet/components/icons/base/Group';
+import RenderField from '../common/RenderField';
+import { required } from '../common/validationUtils';
 
 import './styles.css';
 
-const required = value => (value ? undefined : 'Required')
-
-const renderField = ({ input, label, type, meta: { touched, error, warning } }) => (
-  <div>
-    <label>{label}</label>
-    <div>
-      <input {...input} placeholder={label} type={type} />
-      {touched &&
-        ((error && <span className="error-span">{error}</span>) ||
-          (warning && <span>{warning}</span>))}
-    </div>
-  </div>
-);
 class LoginForm extends React.Component {
   state = { error: '' };
-  // componentDidMount() {
-  //   localStorage.removeItem('loginId');
-  // }
   submit = (values) => {
     let url = "http://localhost:3001/users";
     fetch(url)
@@ -58,15 +44,15 @@ class LoginForm extends React.Component {
         <form onSubmit={this.props.handleSubmit(this.submit)}>
           <Box justify="end" align="center" margin="small" direction="row">
             <Label className="label-signup">Email</Label>
-            <Field validate={required} name="email" component={renderField} type="text" />
+            <Field validate={required} name="email" component={RenderField} type="text" />
           </Box>
           <Box justify="end" align="center" margin="small" direction="row">
             <Label className="label-signup">Password</Label>
-            <Field validate={required} name="password" component={renderField} type="password" />
+            <Field validate={required} name="password" component={RenderField} type="password" />
           </Box>
           <Box justify="end" align="center" direction="row">
-            <Button margin="small" align="center" icon={<LoginIcon  />} direction="row" box colorIndex="accent-1-a" label="Login" type="submit" />
-            <Button align="center" icon={<GroupIcon  />} direction="row" colorIndex="unknown" box label='SignUp' href='/signup' />
+            <Button margin="small" align="center" icon={<LoginIcon />} direction="row" box colorIndex="accent-1-a" label="Login" type="submit" />
+            <Button align="center" icon={<GroupIcon />} direction="row" colorIndex="unknown" box label='SignUp' href='/signup' />
           </Box>
         </form>
       </Box>);
