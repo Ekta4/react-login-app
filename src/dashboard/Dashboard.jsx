@@ -7,7 +7,9 @@ import Menu from 'grommet/components/Menu';
 import Anchor from 'grommet/components/Anchor';
 import Footer from 'grommet/components/Footer';
 import Image from 'grommet/components/Image';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import LogoutIcon from 'grommet/components/icons/base/Logout';
+import Headline from 'grommet/components/Headline';
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import { IntlProvider, addLocaleData, FormattedMessage } from 'react-intl';
 import en from 'react-intl/locale-data/en';
 import zh from 'react-intl/locale-data/zh';
@@ -16,73 +18,64 @@ import grommetMessages from 'grommet/messages/en-US';
 import { LOCALE_MESSAGE } from '../common/constants';
 import './styles.css';
 
-import { Redirect } from "react-router-dom";
-
 addLocaleData([
   ...en,
   ...zh
 ]);
 const AppHeader = ({ logOutUser, toggleLocale }) => (
-  <Header align="center" justify="between" colorIndex='unknown' splash={false}>
+  <Header separator="all" align="center" justify="between" colorIndex='light-1' splash={false}>
     <Title>
       <FormattedMessage id="labels.header" />
     </Title>
-    <Box
-      justify='end'
-      direction='row'
-      responsive={false}>
+    <Box direction="row" margin={{ right: "small" }} align="center" justify="end" responsive={false}>
       <CheckBox label={<FormattedMessage id="labels.language" />} toggle={true} onChange={toggleLocale} />
-      <Anchor href='#' onClick={logOutUser}>
-        Log out
+      <Anchor icon={<LogoutIcon />} href='#' onClick={logOutUser}>
+        <FormattedMessage id="labels.logout" />
       </Anchor>
     </Box>
   </Header>
 );
 const AppLeftMenu = ({ userdata }) => (
-  <Sidebar className="side-menu" colorIndex='neutral-1'>
+  <Sidebar className="side-menu" colorIndex='grey-2'>
     <Header pad='medium' justify='between'>
       <Title>
-        Title
+        <FormattedMessage id="labels.title" />
       </Title>
     </Header>
     <Box justify='start'>
       <Menu primary={true}>
-        {/* <NavLink to="/dashboard" > */}
         <Anchor href='/dashboard' className='active'>
-          Home
+          <FormattedMessage id="labels.home" />
         </Anchor>
-        {/* </NavLink> */}
         {
           userdata.isAdmin &&
-          // <NavLink to="/dashboard/friends" >
           <Anchor href='/dashboard/friends'>
-            Friends List
-         </Anchor>
-          // </NavLink>
+            <FormattedMessage id="labels.friendsList" />
+          </Anchor>
         }
       </Menu>
     </Box>
   </Sidebar>
 );
 const AppFooter = () => (
-  <Footer justify='between'>
+  <Footer separator="all" align="center" justify="between" colorIndex='light-1'>
     <Title>
       <s />
-      Footer
-  </Title>
+      <FormattedMessage id="labels.footer" />
+    </Title>
     <Box direction='row'
       align='center'
       pad={{ "between": "medium" }}>
       <Menu direction='row' inline size='small' dropAlign={{ "right": "right" }}>
         <Anchor href='#'>
-          Support
-      </Anchor>
+          <FormattedMessage id="labels.support" />
+        </Anchor>
         <Anchor href='#'>
-          Contact
-      </Anchor>
+          <FormattedMessage id="labels.contact" />
+        </Anchor>
         <Anchor href='#'>
-          About
-      </Anchor>
+          <FormattedMessage id="labels.about" />
+        </Anchor>
       </Menu>
     </Box>
   </Footer>
@@ -90,8 +83,10 @@ const AppFooter = () => (
 
 const DashboardContent = ({ userdata }) => {
   return (Object.keys(userdata).length ? (
-    <Box>
-      welcome {userdata["first name"]}
+    <Box align="center">
+      <Headline strong={true} size='small'>
+        <FormattedMessage id="messages.welcome" values={{ user: userdata["first name"] }} />
+      </Headline>
       <Image src={userdata["profile picture"]} />
     </Box>) : null);
 }
@@ -111,7 +106,6 @@ class FriendsList extends React.Component {
   }
   render() {
     const { friendsList } = this.state;
-    console.log("friends list...:", friendsList);
     return (
       <Box>
         friends

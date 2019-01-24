@@ -5,6 +5,9 @@ import Button from 'grommet/components/Button';
 import Toast from 'grommet/components/Toast';
 import { Field, reduxForm, getFormSyncErrors } from 'redux-form'
 import { connect } from 'react-redux';
+import { Redirect } from "react-router-dom";
+import LoginIcon from 'grommet/components/icons/base/Login';
+import GroupIcon from 'grommet/components/icons/base/Group';
 
 import './styles.css';
 
@@ -23,9 +26,9 @@ const renderField = ({ input, label, type, meta: { touched, error, warning } }) 
 );
 class LoginForm extends React.Component {
   state = { error: '' };
-  componentDidMount() {
-    localStorage.removeItem('loginId');
-  }
+  // componentDidMount() {
+  //   localStorage.removeItem('loginId');
+  // }
   submit = (values) => {
     let url = "http://localhost:3001/users";
     fetch(url)
@@ -43,7 +46,9 @@ class LoginForm extends React.Component {
     this.setState({ error: '' });
   }
   render() {
-    return (
+    const userId = localStorage.getItem('loginId');
+    const loginRedirect = (<Redirect to='/dashboard' />);
+    const lofinForm = (
       <Box justify="center" align="center">
         {this.state.error &&
           <Toast status="critical" onClose={this.onErrorClose} size="small">
@@ -51,21 +56,22 @@ class LoginForm extends React.Component {
           </Toast>
         }
         <form onSubmit={this.props.handleSubmit(this.submit)}>
-          <Box justify="center" align="center" margin="small" direction="row">
+          <Box justify="end" align="center" margin="small" direction="row">
             <Label className="label-signup">Email</Label>
             <Field validate={required} name="email" component={renderField} type="text" />
           </Box>
-          <Box justify="center" align="center" margin="small" direction="row">
+          <Box justify="end" align="center" margin="small" direction="row">
             <Label className="label-signup">Password</Label>
             <Field validate={required} name="password" component={renderField} type="password" />
           </Box>
-          <Box justify="center" align="center" direction="row">
-            <Button primary label="Login" type="submit" />
-            <Button label='SignUp' href='/signup' primary />
+          <Box justify="end" align="center" direction="row">
+            <Button margin="small" align="center" icon={<LoginIcon  />} direction="row" box colorIndex="accent-1-a" label="Login" type="submit" />
+            <Button align="center" icon={<GroupIcon  />} direction="row" colorIndex="unknown" box label='SignUp' href='/signup' />
           </Box>
         </form>
-      </Box>
-    );
+      </Box>);
+
+    return (userId ? loginRedirect : lofinForm);
   }
 }
 

@@ -1,4 +1,13 @@
 {
 	"labels.language": "Language",
-	"labels.header": "Header"
+	"labels.header": "Header",
+	"labels.logout": "Log Out",
+	"labels.title": "Title",
+	"labels.home": "Home",
+	"labels.friendsList": "Friends List",
+	"labels.footer": "Footer",
+	"labels.support": "Support",
+	"labels.contact": "Contact",
+	"labels.about": "About",
+	"messages.welcome": "welcome {user}"
 }

@@ -1,4 +1,13 @@
 {
 	"labels.language": "语言",
-	"labels.header": "头"
+	"labels.header": "头",
+	"labels.logout": "登出",
+	"labels.title": "标题",
+	"labels.home": "家",
+	"labels.friendsList": "朋友列表",
+	"labels.footer": "页脚",
+	"labels.support": "支持",
+	"labels.contact": "联系",
+	"labels.about": "关于",
+	"messages.welcome": "欢迎 {user}"
 }
